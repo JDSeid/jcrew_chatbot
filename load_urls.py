@@ -25,8 +25,6 @@ except Exception as e:
 db = client["jcrew_db"]
 collection = db["products"]
 
-print(client.list_database_names())
-
 
 def __main__():
     with open('product_urls.csv', 'w') as csv_file:
@@ -63,37 +61,58 @@ def findEleById(soup, id):
         return ele.text
 
 
+url = 'https://www.jcrew.com/p/womens/categories/clothing/blazers/lady-jacket/odette-sweater-lady-jacket-in-cotton-blend-boucleacute/BR789?display=standard&fit=Classic&color_name=kelly-green&colorProductCode=BR789'
+
+
 def createProductObj(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     script = soup.find('script', id="__NEXT_DATA__")
+    found = soup.find_all('a', attrs={'href': "#BVRRWidgetID"})
+    print(found)
     product = {}
     id = url[-5:]
     if script:
         json_data = json.loads(script.text)
+        # file.write(json.dumps(json_data, indent=2))
         productList = json_data['props']['initialState']['products']['productsByProductCode']
         id_dict_key = list(productList.keys())[0]
         product_info = productList[id_dict_key]
         listPrice = product_info['listPrice']
+        colorsList = product_info['colorsList']
+        product['sizesList'] = list(product_info['sizesMap'].keys())
+        priceModel = product_info['priceModel']
+        if 'now' in priceModel:
+            product['sale_price'] = priceModel['now']['amount']
+            product['on_sale'] = True
+        else:
+            product['on_sale'] = False
         if listPrice is not None:
-            product['listPrice'] = listPrice['amount']
+            product['list_price'] = listPrice['amount']
         else:
             return None
+        if colorsList is not None:
+            product['colors'] = list()
+            colors = colorsList[0]['colors']
+            for color in colors:
+                product['colors'].append(
+                    color['name'].lower().capitalize())
 
     name = findEleById(soup, 'product-name__p')
 
     if name is None:
         print("product not found")
         return None
-    desc = soup.find('p', attrs={'data-qaid': 'pdpProductDescriptionRomance'})
+    desc = soup.find(
+        'p', attrs={'data-qaid': 'pdpProductDescriptionRomance'})
     if desc:
         product['desc'] = desc.getText()
     _id = url[-5:]
 
     product['name'] = name
     product['_id'] = id
-
     return product
 
 
-__main__()
+createProductObj(url)
+# __main__()
