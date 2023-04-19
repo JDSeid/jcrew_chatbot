@@ -15,12 +15,6 @@ uri = "mongodb+srv://jcrew-app:KICisfROhfIjfOC8@cluster0.9yvvojd.mongodb.net/?re
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=certifi.where())
 
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
 
 db = client["jcrew_db"]
 collection = db["products"]
@@ -28,32 +22,26 @@ collection = db["products"]
 
 def __main__():
     db.products.delete_many({})
-    with open('product_urls.csv', 'w') as csv_file:
-        # header_names = ['name', 'id', 'listPrice']
-        # writer = csv.DictWriter(csv_file, fieldnames=header_names)
-        # writer.writeheader()
-        num_products = 0
-        products = list()
-        # Loop through 6 pages of lists of product urls
-        for i in range(2, 6):
-            product_list_url = "https://www.jcrew.com/sitemap-wex/sitemap-pdp{page_num}.xml".format(
-                page_num=i)
-            # product_list_url = product_list_url.format(page_num=i)
-            response = requests.get(product_list_url)
-            page_list = xmltodict.parse(response.content)['urlset']['url']
-            for page in page_list:
-                product = createProductObj(page['loc'])
-                num_products += 1
-                print("Num product " + str(num_products))
-                if product is not None:
-                    try:
-                        collection.insert_one(product)
-                    except:
-                        pass
-
-                    # writer.writerow(product)
-                else:
-                    print("Product Not Found")
+    num_products = 0
+    products = list()
+    # Loop through 6 pages of lists of product urls
+    for i in range(2, 6):
+        product_list_url = "https://www.jcrew.com/sitemap-wex/sitemap-pdp{page_num}.xml".format(
+            page_num=i)
+        # product_list_url = product_list_url.format(page_num=i)
+        response = requests.get(product_list_url)
+        page_list = xmltodict.parse(response.content)['urlset']['url']
+        for page in page_list:
+            product = createProductObj(page['loc'])
+            num_products += 1
+            print("Num product " + str(num_products))
+            if product is not None:
+                try:
+                    collection.insert_one(product)
+                except:
+                    pass
+            else:
+                print("Product Not Found")
 
 
 def findEleById(soup, id):
