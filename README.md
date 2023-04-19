@@ -15,6 +15,10 @@ The chatbot was constructed as follows:
 5. Feed user prompts to the model and output its response
 
 ## Getting started
+First, clone the repository locally:
+```bash
+git clone https://github.com/JDSeid/jcrew_chatbot.git
+```
 Run the following to install the required packages:
 ```bash
 pip install --upgrade pip
