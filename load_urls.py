@@ -27,6 +27,7 @@ collection = db["products"]
 
 
 def __main__():
+    db.products.delete_many({})
     with open('product_urls.csv', 'w') as csv_file:
         # header_names = ['name', 'id', 'listPrice']
         # writer = csv.DictWriter(csv_file, fieldnames=header_names)

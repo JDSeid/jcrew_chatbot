@@ -4,29 +4,26 @@ from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
 import sys
+
+
 import time
 import random
 
-os.environ['OPENAI_API_KEY'] = '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'
+api_key = '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'
+os.environ['OPENAI_API_KEY'] = api_key
 
-OpenAI.api_key = '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'
+OpenAI.api_key = api_key
 llm = OpenAI(temperature=0.9)
 
 loader = CSVLoader(file_path='products.csv')
 documents = loader.load()
-print(type(documents[0]))
 
 embeddings = OpenAIEmbeddings()
 vectorstore = Chroma.from_documents(documents, embeddings)
 
 qa = ConversationalRetrievalChain.from_llm(llm, vectorstore.as_retriever())
-
-# query = "what is the most expensive pair of pants that jcrew offers"
-# chat_history = []
-# result = qa({"question": query, "chat_history": chat_history})
-# print(result)
-
 
 typing_speed = 175  # wpm
 
@@ -50,7 +47,10 @@ prompt = input()
 
 chat_history = []
 while ("quit" not in prompt.lower()):
-
+    memory = ConversationBufferMemory(
+        memory_key='chat_history', return_messages=False)
+    qa = ConversationalRetrievalChain.from_llm(
+        llm, vectorstore.as_retriever(), memory=memory)
     result = qa({"question": prompt, "chat_history": chat_history})
     chat_history.append((prompt, result['answer']))
 
