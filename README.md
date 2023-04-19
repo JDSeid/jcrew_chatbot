@@ -11,7 +11,7 @@ The chatbot was constructed as follows:
 1. Index over 4,000 product pages from the JCrew website
 2. Scrape information including product name, price, description, and sizes from each product page
 3. Create an instance of an OpenAi model
-4. Load product information as documents to the AI model
+4. Load product information as documents to the AI model using Langchain packages
 5. Feed user prompts to the model and output its response
 
 ## Getting started
