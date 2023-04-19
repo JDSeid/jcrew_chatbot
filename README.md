@@ -1,6 +1,6 @@
 # JCrew AI Chatbot
 
-## Created by Jake Seidman
+### Created by Jake Seidman
 
 ## About
 
@@ -25,6 +25,12 @@ And the following to start the chatbot
 python chatbot.py
 ```
 
-## Questions/Contact
+## Notes
+- The model is currently using an API key I registered at OpenAI. If this key expires for any reason, you may have to generate a new key at https://platform.openai.com/account/api-keys
+- ~4000 product pages were indexed and had their data scraped. Due to the large number of requests made, JCrew blocked my ip address from making additional requests, so I was not able to index the entirety of the site.
+
+
+
+## Contact Me
 
 For any questions/comments about this repository, contact me at Jacob.Seidman@tufts.edu

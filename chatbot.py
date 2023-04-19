@@ -11,7 +11,7 @@ import sys
 import time
 import random
 
-api_key = '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'
+api_key = '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'
 os.environ['OPENAI_API_KEY'] = api_key
 
 OpenAI.api_key = api_key
