@@ -24,7 +24,7 @@ Run the following to install the required packages:
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-And the following to start the chatbot
+And the following to start the chatbot:
 ```bash
 python chatbot.py
 ```
